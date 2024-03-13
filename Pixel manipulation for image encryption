@@ -1,0 +1,64 @@
+from PIL import Image
+
+def encrypt_image(image_path, key):
+    # Open the image
+    img = Image.open(image_path)
+    pixels = img.load()
+
+    # Encrypt each pixel using XOR operation with the key
+    encrypted_pixels = []
+    for y in range(img.size[1]):
+        for x in range(img.size[0]):
+            r, g, b = pixels[x, y]
+            r ^= key
+            g ^= key
+            b ^= key
+            encrypted_pixels.append((r, g, b))
+
+    # Create a new image with the encrypted pixels
+    encrypted_img = Image.new(img.mode, img.size)
+    encrypted_img.putdata(encrypted_pixels)
+
+    # Save the encrypted image
+    encrypted_image_path = image_path.split('.')[0] + "_encrypted.png"
+    encrypted_img.save(encrypted_image_path)
+    print("Image encrypted successfully!")
+    return encrypted_image_path
+
+def decrypt_image(encrypted_image_path, key):
+    # Open the encrypted image
+    img = Image.open(encrypted_image_path)
+    pixels = img.load()
+
+    # Decrypt each pixel using XOR operation with the key
+    decrypted_pixels = []
+    for y in range(img.size[1]):
+        for x in range(img.size[0]):
+            r, g, b = pixels[x, y]
+            r ^= key
+            g ^= key
+            b ^= key
+            decrypted_pixels.append((r, g, b))
+
+    # Create a new image with the decrypted pixels
+    decrypted_img = Image.new(img.mode, img.size)
+    decrypted_img.putdata(decrypted_pixels)
+
+    # Save the decrypted image
+    decrypted_image_path = encrypted_image_path.split('_encrypted')[0] + "_decrypted.png"
+    decrypted_img.save(decrypted_image_path)
+    print("Image decrypted successfully!")
+    return decrypted_image_path
+
+def main():
+    image_path = input("Enter the path to the image: ")
+    key = int(input("Enter the encryption/decryption key: "))
+
+    # Encrypt the image
+    encrypted_image_path = encrypt_image(image_path, key)
+
+    # Decrypt the image
+    decrypted_image_path = decrypt_image(encrypted_image_path, key)
+
+if __name__ == "__main__":
+    main()
